@@ -1,0 +1,93 @@
+# Function to display usage instructions
+usage() {
+    echo "Usage: $0 [OPTIONS]"
+    echo "Options:"
+    echo "  -a, --add-user USERNAME        Add a new user"
+    echo "  -d, --delete-user USERNAME     Delete an existing user"
+    echo "  -m, --modify-user USERNAME     Modify an existing user"
+    echo "  -g, --add-group GROUPNAME      Add a new group"
+    echo "  -r, --delete-group GROUPNAME   Delete an existing group"
+    echo "  -b, --backup DIRECTORY         Backup a specified directory"
+    echo "  -h, --help                     Display this help message"
+}
+
+# Function to add a new user
+add_user() {
+    username="$1"
+    sudo useradd "$username"
+    echo "User $username added successfully"
+}
+
+# Function to delete an existing user
+delete_user() {
+    username="$1"
+    sudo userdel -r "$username"
+    echo "User $username deleted successfully"
+}
+
+# Function to modify an existing user
+modify_user() {
+    username="$1"
+    # Add modification logic here
+    echo "User $username modified successfully"
+}
+
+# Function to add a new group
+add_group() {
+    groupname="$1"
+    sudo groupadd "$groupname"
+    echo "Group $groupname added successfully"
+}
+
+# Function to delete an existing group
+delete_group() {
+    groupname="$1"
+    sudo groupdel "$groupname"
+    echo "Group $groupname deleted successfully"
+}
+
+# Function to backup a specified directory
+backup_directory() {
+    directory="$1"
+    backup_file="backup_$(date +'%Y%m%d_%H%M%S').tar.gz"
+    tar -czf "$backup_file" "$directory"
+    echo "Backup created: $backup_file"
+}
+
+# Main script logic
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -a|--add-user)
+            add_user "$2"
+            shift 2 ;;
+        -d|--delete-user)
+            delete_user "$2"
+            shift 2 ;;
+        -m|--modify-user)
+            modify_user "$2"
+            shift 2 ;;
+        -g|--add-group)
+            add_group "$2"
+            shift 2 ;;
+        -r|--delete-group)
+            delete_group "$2"
+            shift 2 ;;
+        -b|--backup)
+            backup_directory "$2"
+            shift 2 ;;
+        -h|--help)
+            usage
+            exit ;;
+        *)
+            echo "Error: Invalid option: $1"
+            usage
+            exit 1 ;;
+    esac
+done
+
+# Check if no options were provided
+if [[ "$#" -eq 0 ]]; then
+    echo "Error: No options provided"
+    usage
+    exit 1
+fi
